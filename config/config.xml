@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Moorhuhn Bundle</Name>
+    <Version>0.1.0</Version>
+    <Title>Moorhuhn Bundle</Title>
+    <Publisher>Phenomedia AG</Publisher>
+    <StartMenuDir>Moorhuhn</StartMenuDir>
+    <TargetDir>@HomeDir@/Games/Moorhuhn</TargetDir>
+    <MaintenanceToolName>uninstall</MaintenanceToolName>
+    <MaintenanceToolIniFile>uninstall.ini</MaintenanceToolIniFile>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+    <InstallActionColumnVisible>false</InstallActionColumnVisible>
+    <SupportsModify>false</SupportsModify>
+    <ControlScript>controlscript.qs</ControlScript>
+</Installer>
