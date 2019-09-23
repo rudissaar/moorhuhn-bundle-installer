@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Moorhuhjagd</DisplayName>
+    <Description>Moorhuhjagd</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>1999-12-23</ReleaseDate>
+    <Name>eu.murda.moorhuhn.moorhuhnjagd</Name>
+    <Dependencies>eu.murda.moorhuhn</Dependencies>
+    <SortingPriority>500</SortingPriority>
+    <Default>true</Default>
+</Package>
+
