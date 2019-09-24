@@ -9,6 +9,7 @@ fi
 
 # Install packages.
 dnf install -y \
+    coreutils \
     gawk \
     p7zip \
     upx \
