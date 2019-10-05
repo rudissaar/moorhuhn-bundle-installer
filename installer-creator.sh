@@ -10,14 +10,17 @@
 # - Qt Installer Framework 3.0 or higher
 # - UPX (Optional)
 
-# Name of the installer that will be generated. 
-INSTALLER_NAME='dist/moorhuhn-bundle-installer.run'
-
 # Manual binary fallbacks.
 WGET_FALLBACK=''
+P7ZIP_FALLBACK=''
+BINARYCREATOR_FALLBACK=''
+UPX_FALLBACK=''
 
 # Variable that captures parent directory of current script, do not modify.
 RELATIVE_PATH=$(dirname ${0})
+
+# Name of the installer that will be generated.
+INSTALLER_NAME="${RELATIVE_PATH}/dist/moorhuhn-bundle-installer.run"
 
 # If sources.ini file is not found, then lets generate it by copying sample.
 if [[ ! -f "${RELATIVE_PATH}/sources.ini" ]]; then
@@ -45,6 +48,17 @@ IMPORT_MOORHUHNJAGD () {
     fi
 }
 
+BUILD_INSTALLER () {
+    echo "> Creating installer."
+
+    COMMAND="${BINARYCREATOR}"
+    COMMAND="${COMMAND} -c ${RELATIVE_PATH}/config/config.xml"
+    COMMAND="${COMMAND} -p ${RELATIVE_PATH}/packages"
+    COMMAND="${COMMAND} ${INSTALLER_NAME}"
+
+    eval "${COMMAND}"
+}
+
 # Capturing wget command.
 which wget 1> /dev/null 2>&1
 
@@ -60,5 +74,21 @@ else
     WGET="$(which wget)"
 fi
 
+# Capturing binarycreator command.
+which binarycreator 1> /dev/null 2>&1
+
+if [[ "${?}" != '0' ]]; then
+    if [[ ! -z "${BINARYCREATOR_FALLBACK}" ]]; then
+        BINARYCREATOR="${BINARYCREATOR_FALLBACK_FALLBACK}"
+    else
+        echo "> Unable to find binarycreator from your environment's PATH variable."
+        echo '> Aborting.'
+        exit 1
+    fi
+else
+    BINARYCREATOR="$(which binarycreator)"
+fi
+
 IMPORT_MOORHUHNJAGD
+BUILD_INSTALLER
 
