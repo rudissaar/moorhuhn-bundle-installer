@@ -34,6 +34,13 @@ GET_VALUE_FROM_DOT_INIT () {
 
 MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_DOT_INIT moorhuhnjagd_zip_url)
 
+CLEAR_DATA_DIRS () {
+    for DIR_TO_CLEAR in $(find "${RELATIVE_PATH}" -type d -name 'data')
+    do
+        rm -r "${DIR_TO_CLEAR}/"*
+    done
+}
+
 IMPORT_MOORHUHNJAGD () {
     if [[ -z "${MOORHUHNJAGD_ZIP_URL}" ]]; then
         echo '> Source for Moorhuhjagd zip archive is unspecified.'
@@ -42,9 +49,14 @@ IMPORT_MOORHUHNJAGD () {
     fi
 
     MOORHUHNJAGD_ARCHIVE_PATH="${RELATIVE_PATH}/tmp/moorhuhnjagd.zip"
+    MOORHUHNJAGD_DATA_DIR="${RELATIVE_PATH}/packages/eu.murda.moorhuhn.moorhuhnjagd/data/moorhuhjagd"
 
     if [[ ! -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]]; then
         "${WGET}" "${MOORHUHNJAGD_ZIP_URL}" -O "${MOORHUHNJAGD_ARCHIVE_PATH}"
+    fi
+
+    if [[ -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]]; then
+        "${P7ZIP}" x -aoa "-o${MOORHUHNJAGD_DATA_DIR}" "${MOORHUHNJAGD_ARCHIVE_PATH}"
     fi
 }
 
@@ -74,6 +86,21 @@ else
     WGET="$(which wget)"
 fi
 
+# Capturing 7z command.
+which 7z 1> /dev/null 2>&1
+
+if [[ "${?}" != '0' ]]; then
+    if [[ ! -z "${P7ZIP_FALLBACK}" ]]; then
+        P7ZIP="${P7ZIP_FALLBACK}"
+    else
+        echo "> Unable to find 7z from your environment's PATH variable."
+        echo '> Aborting.'
+        exit 1
+    fi
+else
+    P7ZIP="$(which 7z)"
+fi
+
 # Capturing binarycreator command.
 which binarycreator 1> /dev/null 2>&1
 
@@ -89,6 +116,8 @@ else
     BINARYCREATOR="$(which binarycreator)"
 fi
 
+CLEAR_DATA_DIRS
 IMPORT_MOORHUHNJAGD
 BUILD_INSTALLER
+CLEAR_DATA_DIRS
 

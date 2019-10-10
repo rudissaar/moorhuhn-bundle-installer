@@ -8,5 +8,6 @@
     <Dependencies>eu.murda.moorhuhn</Dependencies>
     <SortingPriority>500</SortingPriority>
     <Default>true</Default>
+    <Script>installscript.qs</Script>
 </Package>
 
