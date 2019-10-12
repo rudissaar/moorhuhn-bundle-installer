@@ -14,9 +14,9 @@ Component.prototype.createOperations = function()
         "Name=Moorhuhnjagd\n" +
         "Type=Application\n" +
         "Comment=Moorhuhjagd\n" +
-        "Path=@TargetDir@\n" +
-        "Exec=wine32 @TargetDir@/moorhuhnjagd.exe\n" +
-        "Icon=@TargetDir@/moorhuhnjagd.exe\n" +
+        "Path=@TargetDir@/moorhuhnjagd\n" +
+        "Exec=wine32 @TargetDir@/moorhuhnjagd/moorhuhnjagd.exe\n" +
+        "Icon=@TargetDir@/moorhuhnjagd/moorhuhnjagd.ico\n" +
         "Categories=Game;Emulator;\n" +
         "Terminal=False");
 }
