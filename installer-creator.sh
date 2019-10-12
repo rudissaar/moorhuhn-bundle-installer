@@ -23,7 +23,7 @@ RELATIVE_PATH=$(dirname ${0})
 INSTALLER_NAME="${RELATIVE_PATH}/dist/moorhuhn-bundle-installer.run"
 
 # If sources.ini file is not found, then lets generate it by copying sample.
-if [[ ! -f "${RELATIVE_PATH}/sources.ini" ]]; then
+if [ ! -f "${RELATIVE_PATH}/sources.ini" ]; then
     cp "${RELATIVE_PATH}/sources.ini.sample" "${RELATIVE_PATH}/sources.ini"
 fi
 
@@ -42,7 +42,7 @@ CLEAR_DATA_DIRS () {
 }
 
 IMPORT_MOORHUHNJAGD () {
-    if [[ -z "${MOORHUHNJAGD_ZIP_URL}" ]]; then
+    if [ -z "${MOORHUHNJAGD_ZIP_URL}" ]; then
         echo '> Source for Moorhuhjagd zip archive is unspecified.'
         echo '> Skipping.'
         return
@@ -51,11 +51,11 @@ IMPORT_MOORHUHNJAGD () {
     MOORHUHNJAGD_ARCHIVE_PATH="${RELATIVE_PATH}/tmp/moorhuhnjagd.zip"
     MOORHUHNJAGD_DATA_DIR="${RELATIVE_PATH}/packages/eu.murda.moorhuhn.moorhuhnjagd/data/moorhuhjagd"
 
-    if [[ ! -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]]; then
+    if [ ! -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]; then
         "${WGET}" "${MOORHUHNJAGD_ZIP_URL}" -O "${MOORHUHNJAGD_ARCHIVE_PATH}"
     fi
 
-    if [[ -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]]; then
+    if [ -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHNJAGD_DATA_DIR}" "${MOORHUHNJAGD_ARCHIVE_PATH}"
     fi
 }
@@ -74,8 +74,8 @@ BUILD_INSTALLER () {
 # Capturing wget command.
 which wget 1> /dev/null 2>&1
 
-if [[ "${?}" != '0' ]]; then
-    if [[ ! -z "${WGET_FALLBACK}" ]]; then
+if [ "${?}" != '0' ]; then
+    if [ ! -z "${WGET_FALLBACK}" ]; then
         WGET="${WGET_FALLBACK}"
     else
         echo "> Unable to find wget from your environment's PATH variable."
@@ -89,8 +89,8 @@ fi
 # Capturing 7z command.
 which 7z 1> /dev/null 2>&1
 
-if [[ "${?}" != '0' ]]; then
-    if [[ ! -z "${P7ZIP_FALLBACK}" ]]; then
+if [ "${?}" != '0' ]; then
+    if [ ! -z "${P7ZIP_FALLBACK}" ]; then
         P7ZIP="${P7ZIP_FALLBACK}"
     else
         echo "> Unable to find 7z from your environment's PATH variable."
@@ -104,8 +104,8 @@ fi
 # Capturing binarycreator command.
 which binarycreator 1> /dev/null 2>&1
 
-if [[ "${?}" != '0' ]]; then
-    if [[ ! -z "${BINARYCREATOR_FALLBACK}" ]]; then
+if [ "${?}" != '0' ]; then
+    if [ ! -z "${BINARYCREATOR_FALLBACK}" ]; then
         BINARYCREATOR="${BINARYCREATOR_FALLBACK_FALLBACK}"
     else
         echo "> Unable to find binarycreator from your environment's PATH variable."
