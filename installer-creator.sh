@@ -28,11 +28,12 @@ if [ ! -f "${RELATIVE_PATH}/sources.ini" ]; then
 fi
 
 # Function that reads sources.ini file and return values from it.
-GET_VALUE_FROM_DOT_INIT () {
+GET_VALUE_FROM_INI_FILE () {
     echo $(awk -F '=' '/'${1}'/ {print $2}' "${RELATIVE_PATH}/sources.ini")
 }
 
-MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_DOT_INIT moorhuhnjagd_zip_url)
+MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnjagd_zip_url)
+MOORHUHN2_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhn2_zip_url)
 
 CLEAR_DATA_DIRS () {
     for DIR_TO_CLEAR in $(find "${RELATIVE_PATH}" -type d -name 'data')
