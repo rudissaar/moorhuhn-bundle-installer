@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Moorhuhn 2</DisplayName>
+    <Description>Moorhuhn 2 - Die Jagd geht weiter</Description>
+    <Version>1.25</Version>
+    <ReleaseDate>2000-08-20</ReleaseDate>
+    <Name>eu.murda.moorhuhn.moorhuhn2</Name>
+    <Dependencies>eu.murda.moorhuhn</Dependencies>
+    <SortingPriority>499</SortingPriority>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
+
