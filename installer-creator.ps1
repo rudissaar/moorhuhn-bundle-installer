@@ -12,10 +12,13 @@
 
 Set-StrictMode -Version 3
 
-$global:InstallerName = "${PSScriptRoot}\dist\moorhuhn-bundle-installer.exe"
+$CompressInstallerIfPossible = 1
 
+$7zipFallback = ''
 $BinaryCreatorFallback = ''
+$UpxFallback = ''
 
+$global:InstallerName = "${PSScriptRoot}\dist\moorhuhn-bundle-installer.exe"
 
 Function Main
 {
@@ -30,6 +33,20 @@ Function Main
     Build-Installer
 }
 
+
+Function Get-7zip
+{
+    If (Get-Command '7z.exe' -ErrorAction SilentlyContinue) {
+        Return (Get-Command '7z.exe' | Select -ExpandProperty Source)
+    } Else {
+        If (-Not ([string]::IsNullOrEmpty($7zipFallback))) {
+            Return $7zipFallback
+        }
+    }
+
+    Return 1
+}
+
 Function Get-BinaryCreator
 {
     If (Get-Command 'binarycreator.exe' -ErrorAction SilentlyContinue) {
@@ -37,6 +54,24 @@ Function Get-BinaryCreator
     } Else {
         If (-Not ([string]::IsNullOrEmpty($BinaryCreatorFallback))) {
             Return $BinaryCreatorFallback
+        }
+    }
+
+    Return 1
+}
+
+Function Get-Upx
+{
+    If (Get-Command 'upx.exe' -ErrorAction SilentlyContinue) {
+        Return (Get-Command 'upx.exe' | Select -ExpandProperty Source)
+    } Else {
+        If (-Not ([string]::IsNullOrEmpty($UpxFallback))) {
+            Return $UpxFallback
+        } Else {
+            If ($CompressInstallerIfPossible) {
+                Write-Output "> Unable to find upx.exe from your environment's PATH variable."
+                echo '> Compressing the installer will be skipped.'
+            }
         }
     }
 
