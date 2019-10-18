@@ -34,7 +34,7 @@ GET_VALUE_FROM_INI_FILE () {
 
 MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnjagd_zip_url)
 MOORHUHN2_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhn2_zip_url)
-MOORHUHNWE_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnwe_zip_url)
+MOORHUHNWINTER_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnwinter_zip_url)
 
 CLEAR_DATA_DIRS () {
     for DIR_TO_CLEAR in $(find "${RELATIVE_PATH}" -type d -name 'data')
@@ -81,22 +81,22 @@ IMPORT_MOORHUHN2 () {
     fi
 }
 
-IMPORT_MOORHUHNWE () {
-    if [ -z "${MOORHUHNWE_ZIP_URL}" ]; then
-        echo '> Source for Moorhuhn WE zip archive is unspecified.'
+IMPORT_MOORHUHNWINTER () {
+    if [ -z "${MOORHUHNWINTER_ZIP_URL}" ]; then
+        echo '> Source for Moorhuhn Winter zip archive is unspecified.'
         echo '> Skipping.'
         return
     fi
 
-    MOORHUHNWE_ARCHIVE_PATH="${RELATIVE_PATH}/tmp/moorhuhnwe.zip"
-    MOORHUHNWE_DATA_DIR="${RELATIVE_PATH}/packages/eu.murda.moorhuhn.moorhuhnwe/data/moorhuhnwe"
+    MOORHUHNWINTER_ARCHIVE_PATH="${RELATIVE_PATH}/tmp/moorhuhnwinter.zip"
+    MOORHUHNWINTER_DATA_DIR="${RELATIVE_PATH}/packages/eu.murda.moorhuhn.moorhuhnwinter/data/moorhuhnwinter"
 
-    if [ ! -f "${MOORHUHNWE_ARCHIVE_PATH}" ]; then
-        "${WGET}" "${MOORHUHNWE_ZIP_URL}" -O "${MOORHUHNWE_ARCHIVE_PATH}"
+    if [ ! -f "${MOORHUHNWINTER_ARCHIVE_PATH}" ]; then
+        "${WGET}" "${MOORHUHNWINTER_ZIP_URL}" -O "${MOORHUHNWINTER_ARCHIVE_PATH}"
     fi
 
-    if [ -f "${MOORHUHNWE_ARCHIVE_PATH}" ]; then
-        "${P7ZIP}" x -aoa "-o${MOORHUHNWE_DATA_DIR}" "${MOORHUHNWE_ARCHIVE_PATH}"
+    if [ -f "${MOORHUHNWINTER_ARCHIVE_PATH}" ]; then
+        "${P7ZIP}" x -aoa "-o${MOORHUHNWINTER_DATA_DIR}" "${MOORHUHNWINTER_ARCHIVE_PATH}"
     fi
 }
 
@@ -159,8 +159,7 @@ fi
 CLEAR_DATA_DIRS
 IMPORT_MOORHUHNJAGD
 IMPORT_MOORHUHN2
-IMPORT_MOORHUHNWE
-IMPORT_MOORHUHN3
+IMPORT_MOORHUHNWINTER
 BUILD_INSTALLER
 CLEAR_DATA_DIRS
 
