@@ -44,7 +44,7 @@ CLEAR_DATA_DIRS () {
 
 IMPORT_MOORHUHNJAGD () {
     if [ -z "${MOORHUHNJAGD_ZIP_URL}" ]; then
-        echo '> Source for Moorhuhjagd zip archive is unspecified.'
+        echo '> Source for Moorhuhnjagd zip archive is unspecified.'
         echo '> Skipping.'
         return
     fi
@@ -58,6 +58,25 @@ IMPORT_MOORHUHNJAGD () {
 
     if [ -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHNJAGD_DATA_DIR}" "${MOORHUHNJAGD_ARCHIVE_PATH}"
+    fi
+}
+
+IMPORT_MOORHUHN2 () {
+    if [ -z "${MOORHUHN2_ZIP_URL}" ]; then
+        echo '> Source for Moorhuhn 2 zip archive is unspecified.'
+        echo '> Skipping.'
+        return
+    fi
+
+    MOORHUHN2_ARCHIVE_PATH="${RELATIVE_PATH}/tmp/moorhuhn2.zip"
+    MOORHUHN2_DATA_DIR="${RELATIVE_PATH}/packages/eu.murda.moorhuhn.moorhuhn2/data/moorhuhn2"
+
+    if [ ! -f "${MOORHUHN2_ARCHIVE_PATH}" ]; then
+        "${WGET}" "${MOORHUHN2_ZIP_URL}" -O "${MOORHUHN2_ARCHIVE_PATH}"
+    fi
+
+    if [ -f "${MOORHUHN2_ARCHIVE_PATH}" ]; then
+        "${P7ZIP}" x -aoa "-o${MOORHUHN2_DATA_DIR}" "${MOORHUHN2_ARCHIVE_PATH}"
     fi
 }
 
@@ -119,6 +138,7 @@ fi
 
 CLEAR_DATA_DIRS
 IMPORT_MOORHUHNJAGD
+IMPORT_MOORHUHN2
 BUILD_INSTALLER
 CLEAR_DATA_DIRS
 
