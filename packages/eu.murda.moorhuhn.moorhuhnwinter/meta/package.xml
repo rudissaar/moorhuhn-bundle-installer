@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Moorhuhn Winter-Edition</DisplayName>
+    <Description>Moorhuhn Winter-Edition</Description>
+    <Version>1.0</Version>
+    <ReleaseDate>2001-03-18</ReleaseDate>
+    <Name>eu.murda.moorhuhn.moorhuhnwinter</Name>
+    <Dependencies>eu.murda.moorhuhn</Dependencies>
+    <SortingPriority>498</SortingPriority>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
+
