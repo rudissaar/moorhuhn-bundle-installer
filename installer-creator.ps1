@@ -28,11 +28,55 @@ Function Main
         Exit(1)
     }
 
+	Get-ValueFromIniFile 'moorhuhnjagd_zip_url'
+
     Write-Output "> BinaryCreator binary found at: '$(Get-BinaryCreator)'"
 
     Build-Installer
 }
 
+Function Get-ValueFromIniFile {
+    param(
+        [parameter(Mandatory = $True)] [string] $Key
+    )
+
+    $Ini = @{}
+
+	Switch -Regex -File "${PSScriptRoot}\sources.ini" {
+        "^\[(.+)\]$"
+        {
+            $Section = $Matches[1]
+            $Ini[$Section] = @{}
+            $CommentCount = 0
+        }
+
+        "^(;.*)$"
+        {
+            If (-Not ($Section)) {
+                $Section = 'global'
+                $Ini[$Section] = @{}
+            }
+
+            $Value = $Matches[1]
+            $CommentCount = $CommentCount + 1
+            $Name = 'Comment' + $CommentCount
+            $Ini[$Section][$Name] = $Value
+        }
+
+        "(.+?)\s*=\s*(.*)"
+        {
+            If (-Not ($Section)) {
+                $Section = 'global'
+                $Ini[$Section] = @{}
+            }
+
+            $Name, $Value = $Matches[1..2]
+            $Ini[$Section][$Name] = $Value
+        }
+    }
+
+	Return $Ini.$Section.$Key
+}
 
 Function Get-7zip
 {
@@ -84,8 +128,8 @@ Function Build-Installer
 
     $Params = @(
         '--offline-only',
-        '-c', 'config/config.xml',
-        '-p', 'packages',
+        '-c', "${PSScriptRoot}\config\config.xml",
+        '-p', "${PSScriptRoot}\packages",
         "${InstallerName}"
     )
 
