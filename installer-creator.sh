@@ -10,6 +10,9 @@
 # - Qt Installer Framework 3.0 or higher
 # - UPX (Optional)
 
+# Tweakable options.
+COMPRESS_INSTALLER_IF_POSSIBLE=1
+
 # Manual binary fallbacks.
 WGET_FALLBACK=''
 P7ZIP_FALLBACK=''
@@ -111,6 +114,15 @@ BUILD_INSTALLER () {
     eval "${COMMAND}"
 }
 
+COMPRESS_INSTALLER () {
+    if [ "${COMPRESS_INSTALLER_IF_POSSIBLE}" = '1' ]; then
+        if [ -f "${INSTALLER_NAME}" ]; then
+            echo "> Compressing Installer to save disk space."
+            "${UPX}" -9 "${INSTALLER_NAME}"
+        fi
+    fi
+}
+
 # Capturing wget command.
 which wget 1> /dev/null 2>&1
 
@@ -156,10 +168,31 @@ else
     BINARYCREATOR="$(which binarycreator)"
 fi
 
+# Capturing upx command.
+which upx 1> /dev/null 2>&1
+
+if [ "${?}" != '0' ]; then
+    if [ ! -z "${UPX_FALLBACK}" ]; then
+        UPX="${UPX_FALLBACK}"
+        echo "> UPX binary found at: '${UPX}'"
+    else
+        if [ "${COMPRESS_INSTALLER_IF_POSSIBLE}" = '1' ]; then
+            echo "> Unable to find upx from your environment's PATH variable."
+            echo '> Compressing the installer will be skipped.'
+        fi
+
+        COMPRESS_INSTALLER_IF_POSSIBLE=0
+    fi
+else
+    UPX="$(which upx)"
+    echo "> UPX binary found at: '${UPX}'"
+fi
+
 CLEAR_DATA_DIRS
 IMPORT_MOORHUHNJAGD
 IMPORT_MOORHUHN2
 IMPORT_MOORHUHNWINTER
 BUILD_INSTALLER
+COMPRESS_INSTALLER
 CLEAR_DATA_DIRS
 
