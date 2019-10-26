@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Moorhuhn 3</DisplayName>
+    <Description>Moorhuhn 3 - Es gibt Huhn!</Description>
+    <Version>1.0.0.1</Version>
+    <ReleaseDate>2001-10-17</ReleaseDate>
+    <Name>eu.murda.moorhuhn.moorhuhn3</Name>
+    <Dependencies>eu.murda.moorhuhn</Dependencies>
+    <SortingPriority>497</SortingPriority>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
+
