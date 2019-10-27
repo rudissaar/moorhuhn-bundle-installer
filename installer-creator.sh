@@ -25,6 +25,9 @@ RELATIVE_PATH=$(dirname ${0})
 # Name of the installer that will be generated.
 INSTALLER_NAME="${RELATIVE_PATH}/dist/moorhuhn-bundle-installer.run"
 
+# Variable that keeps track of how many real packages will installer include, do not modify.
+PACKAGE_COUNTER=0
+
 # If sources.ini file is not found, then lets generate it by copying sample.
 if [ ! -f "${RELATIVE_PATH}/sources.ini" ]; then
     cp "${RELATIVE_PATH}/sources.ini.sample" "${RELATIVE_PATH}/sources.ini"
@@ -64,6 +67,8 @@ IMPORT_MOORHUHNJAGD () {
     if [ -f "${MOORHUHNJAGD_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHNJAGD_DATA_DIR}" "${MOORHUHNJAGD_ARCHIVE_PATH}"
     fi
+
+    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
 }
 
 IMPORT_MOORHUHN2 () {
@@ -83,6 +88,8 @@ IMPORT_MOORHUHN2 () {
     if [ -f "${MOORHUHN2_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHN2_DATA_DIR}" "${MOORHUHN2_ARCHIVE_PATH}"
     fi
+
+    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
 }
 
 IMPORT_MOORHUHNWINTER () {
@@ -102,6 +109,8 @@ IMPORT_MOORHUHNWINTER () {
     if [ -f "${MOORHUHNWINTER_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHNWINTER_DATA_DIR}" "${MOORHUHNWINTER_ARCHIVE_PATH}"
     fi
+
+    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
 }
 
 IMPORT_MOORHUHN3 () {
@@ -121,9 +130,16 @@ IMPORT_MOORHUHN3 () {
     if [ -f "${MOORHUHN3_ARCHIVE_PATH}" ]; then
         "${P7ZIP}" x -aoa "-o${MOORHUHN3_DATA_DIR}" "${MOORHUHN3_ARCHIVE_PATH}"
     fi
+
+    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
 }
 
 BUILD_INSTALLER () {
+    if [ ${PACKAGE_COUNTER} -lt 1 ]; then
+        echo "> Skipping creating installer, because it's not including any packages."
+        return 1
+    fi
+
     echo "> Creating installer."
 
     COMMAND="${BINARYCREATOR}"
@@ -214,6 +230,6 @@ IMPORT_MOORHUHN2
 IMPORT_MOORHUHNWINTER
 IMPORT_MOORHUHN3
 BUILD_INSTALLER
-COMPRESS_INSTALLER
+[ ${?} -eq 0 ] && COMPRESS_INSTALLER
 CLEAR_DATA_DIRS
 
