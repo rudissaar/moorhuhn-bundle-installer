@@ -38,6 +38,34 @@ GET_VALUE_FROM_INI_FILE () {
     echo $(awk -F '=' '/'${1}'/ {print $2}' "${RELATIVE_PATH}/sources.ini")
 }
 
+# Reading options from sources.ini file.
+INI_COMPRESS_INSTALLER_IF_POSSIBLE=$(GET_VALUE_FROM_INI_FILE compress_installer_if_possible)
+if [ ! -z ${INI_COMPRESS_INSTALLER_IF_POSSIBLE} ]; then
+    COMPRESS_INSTALLER_IF_POSSIBLE=${INI_COMPRESS_INSTALLER_IF_POSSIBLE}
+fi
+
+# Reading fallbacks from sources.ini file.
+INI_WGET_FALLBACK=$(GET_VALUE_FROM_INI_FILE wget_fallback)
+if [ ! -z ${INI_WGET_FALLBACK} ]; then
+    WGET_FALLBACK=${INI_WGET_FALLBACK}
+fi
+
+INI_P7ZIP_FALLBACK=$(GET_VALUE_FROM_INI_FILE p7zip_fallback)
+if [ ! -z ${INI_P7ZIP_FALLBACK} ]; then
+    P7ZIP_FALLBACK=${INI_P7ZIP_FALLBACK}
+fi
+
+INI_BINARYCREATOR_FALLBACK=$(GET_VALUE_FROM_INI_FILE binarycreator_fallback)
+if [ ! -z ${INI_BINARYCREATOR_FALLBACK} ]; then
+    BINARYCREATOR_FALLBACK=${INI_BINARYCREATOR_FALLBACK}
+fi
+
+INI_UPX_FALLBACK=$(GET_VALUE_FROM_INI_FILE upx_fallback)
+if [ ! -z ${INI_UPX_FALLBACK} ]; then
+    UPX_FALLBACK=${INI_UPX_FALLBACK}
+fi
+
+# Reading sources from sources.ini file.
 MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnjagd_zip_url)
 MOORHUHN2_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhn2_zip_url)
 MOORHUHNWINTER_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnwinter_zip_url)
