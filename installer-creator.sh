@@ -28,23 +28,23 @@ INSTALLER_NAME="${RELATIVE_PATH}/dist/moorhuhn-bundle-installer.run"
 # Variable that keeps track of how many real packages will installer include, do not modify.
 PACKAGE_COUNTER=0
 
-# If sources.ini file is not found, then lets generate it by copying sample.
-if [ ! -f "${RELATIVE_PATH}/sources.ini" ]; then
-    cp "${RELATIVE_PATH}/sources.ini.sample" "${RELATIVE_PATH}/sources.ini"
+# If settings.ini file is not found, then lets generate it by copying sample.
+if [ ! -f "${RELATIVE_PATH}/settings.ini" ]; then
+    cp "${RELATIVE_PATH}/settings.ini.sample" "${RELATIVE_PATH}/settings.ini"
 fi
 
-# Function that reads sources.ini file and return values from it.
+# Function that reads settings.ini file and return values from it.
 GET_VALUE_FROM_INI_FILE () {
-    echo $(awk -F '=' '/'${1}'/ {print $2}' "${RELATIVE_PATH}/sources.ini")
+    echo $(awk -F '=' '/'${1}'/ {print $2}' "${RELATIVE_PATH}/settings.ini")
 }
 
-# Reading options from sources.ini file.
+# Reading options from settings.ini file.
 INI_COMPRESS_INSTALLER_IF_POSSIBLE=$(GET_VALUE_FROM_INI_FILE compress_installer_if_possible)
 if [ ! -z ${INI_COMPRESS_INSTALLER_IF_POSSIBLE} ]; then
     COMPRESS_INSTALLER_IF_POSSIBLE=${INI_COMPRESS_INSTALLER_IF_POSSIBLE}
 fi
 
-# Reading fallbacks from sources.ini file.
+# Reading fallbacks from settings.ini file.
 INI_WGET_FALLBACK=$(GET_VALUE_FROM_INI_FILE wget_fallback)
 if [ ! -z ${INI_WGET_FALLBACK} ]; then
     WGET_FALLBACK=${INI_WGET_FALLBACK}
@@ -65,7 +65,7 @@ if [ ! -z ${INI_UPX_FALLBACK} ]; then
     UPX_FALLBACK=${INI_UPX_FALLBACK}
 fi
 
-# Reading sources from sources.ini file.
+# Reading settings from settings.ini file.
 MOORHUHNJAGD_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnjagd_zip_url)
 MOORHUHN2_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhn2_zip_url)
 MOORHUHNWINTER_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnwinter_zip_url)
