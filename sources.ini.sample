@@ -1,6 +1,15 @@
-[global]
+[sources]
 moorhuhnjagd_zip_url=
 moorhuhn2_zip_url=
 moorhuhnwinter_zip_url=
 moorhun3_zip_url=
+
+[options]
+compress_installer_if_possible=1
+
+[fallbacks]
+wget_fallback=
+p7zip_fallback=
+binarycreator_fallback=
+upx_fallback=
 
