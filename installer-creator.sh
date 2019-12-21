@@ -1,11 +1,14 @@
 #!/usr/bin/env sh
 
 # SYNOPSIS
+# Runs tasks to generate Moorhuhn bundle installer for UNIX-like operating systems.
 
 # DESCRIPTION
+# This scripts tries to package multiple Moorhuhn games to an installer that is compatible with UNIX-like opertaing system.
 
 # REQUIREMENTS
 # - wget
+# - awk
 # - p7zip
 # - Qt Installer Framework 3.0 or higher
 # - UPX (Optional)
@@ -20,7 +23,7 @@ BINARYCREATOR_FALLBACK=''
 UPX_FALLBACK=''
 
 # Variable that captures parent directory of current script, do not modify.
-RELATIVE_PATH=$(dirname ${0})
+RELATIVE_PATH=$(dirname "${0}")
 
 # Name of the installer that will be generated.
 INSTALLER_NAME="${RELATIVE_PATH}/dist/moorhuhn-bundle-installer.run"
@@ -35,33 +38,33 @@ fi
 
 # Function that reads settings.ini file and return values from it.
 GET_VALUE_FROM_INI_FILE () {
-    echo $(awk -F '=' '/'${1}'/ {print $2}' "${RELATIVE_PATH}/settings.ini")
+    awk -F '=' '/'"${1}"'/ {print $2}' "${RELATIVE_PATH}"/settings.ini
 }
 
 # Reading options from settings.ini file.
 INI_COMPRESS_INSTALLER_IF_POSSIBLE=$(GET_VALUE_FROM_INI_FILE compress_installer_if_possible)
-if [ ! -z ${INI_COMPRESS_INSTALLER_IF_POSSIBLE} ]; then
+if [ -n "${INI_COMPRESS_INSTALLER_IF_POSSIBLE}" ]; then
     COMPRESS_INSTALLER_IF_POSSIBLE=${INI_COMPRESS_INSTALLER_IF_POSSIBLE}
 fi
 
 # Reading fallbacks from settings.ini file.
 INI_WGET_FALLBACK=$(GET_VALUE_FROM_INI_FILE wget_fallback)
-if [ ! -z ${INI_WGET_FALLBACK} ]; then
+if [ -n "${INI_WGET_FALLBACK}" ]; then
     WGET_FALLBACK=${INI_WGET_FALLBACK}
 fi
 
 INI_P7ZIP_FALLBACK=$(GET_VALUE_FROM_INI_FILE p7zip_fallback)
-if [ ! -z ${INI_P7ZIP_FALLBACK} ]; then
+if [ -n "${INI_P7ZIP_FALLBACK}" ]; then
     P7ZIP_FALLBACK=${INI_P7ZIP_FALLBACK}
 fi
 
 INI_BINARYCREATOR_FALLBACK=$(GET_VALUE_FROM_INI_FILE binarycreator_fallback)
-if [ ! -z ${INI_BINARYCREATOR_FALLBACK} ]; then
+if [ -n "${INI_BINARYCREATOR_FALLBACK}" ]; then
     BINARYCREATOR_FALLBACK=${INI_BINARYCREATOR_FALLBACK}
 fi
 
 INI_UPX_FALLBACK=$(GET_VALUE_FROM_INI_FILE upx_fallback)
-if [ ! -z ${INI_UPX_FALLBACK} ]; then
+if [ -n "${INI_UPX_FALLBACK}" ]; then
     UPX_FALLBACK=${INI_UPX_FALLBACK}
 fi
 
@@ -72,10 +75,14 @@ MOORHUHNWINTER_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhnwinter_zip_url)
 MOORHUHN3_ZIP_URL=$(GET_VALUE_FROM_INI_FILE moorhuhn3_zip_url)
 
 CLEAR_DATA_DIRS () {
-    for DIR_TO_CLEAR in $(find "${RELATIVE_PATH}" -type d -name 'data')
+    BASENAME=$(basename "${0}")
+    TMP_FILE=$(mktemp /tmp/"${BASENAME}".XXXXXX)
+    find "${RELATIVE_PATH}" -type d -name 'data' > "${TMP_FILE}"
+    while IFS= read -r DIR_TO_CLEAR
     do
-        rm -r "${DIR_TO_CLEAR}/"*
-    done
+        rm -rf "${DIR_TO_CLEAR:?}/"*
+    done < "${TMP_FILE}"
+    rm "${TMP_FILE}"
 }
 
 IMPORT_MOORHUHNJAGD () {
@@ -96,7 +103,7 @@ IMPORT_MOORHUHNJAGD () {
         "${P7ZIP}" x -aoa "-o${MOORHUHNJAGD_DATA_DIR}" "${MOORHUHNJAGD_ARCHIVE_PATH}"
     fi
 
-    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
+    PACKAGE_COUNTER=$((PACKAGE_COUNTER + 1))
 }
 
 IMPORT_MOORHUHN2 () {
@@ -117,7 +124,7 @@ IMPORT_MOORHUHN2 () {
         "${P7ZIP}" x -aoa "-o${MOORHUHN2_DATA_DIR}" "${MOORHUHN2_ARCHIVE_PATH}"
     fi
 
-    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
+    PACKAGE_COUNTER=$((PACKAGE_COUNTER + 1))
 }
 
 IMPORT_MOORHUHNWINTER () {
@@ -138,7 +145,7 @@ IMPORT_MOORHUHNWINTER () {
         "${P7ZIP}" x -aoa "-o${MOORHUHNWINTER_DATA_DIR}" "${MOORHUHNWINTER_ARCHIVE_PATH}"
     fi
 
-    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
+    PACKAGE_COUNTER=$((PACKAGE_COUNTER + 1))
 }
 
 IMPORT_MOORHUHN3 () {
@@ -159,7 +166,7 @@ IMPORT_MOORHUHN3 () {
         "${P7ZIP}" x -aoa "-o${MOORHUHN3_DATA_DIR}" "${MOORHUHN3_ARCHIVE_PATH}"
     fi
 
-    PACKAGE_COUNTER=$((PACKAGES_COUNTER + 1))
+    PACKAGE_COUNTER=$((PACKAGE_COUNTER + 1))
 }
 
 BUILD_INSTALLER () {
@@ -188,10 +195,8 @@ COMPRESS_INSTALLER () {
 }
 
 # Capturing wget command.
-which wget 1> /dev/null 2>&1
-
-if [ "${?}" != '0' ]; then
-    if [ ! -z "${WGET_FALLBACK}" ]; then
+if ! command -v wget 1> /dev/null 2>&1; then
+    if [ -n "${WGET_FALLBACK}" ]; then
         WGET="${WGET_FALLBACK}"
     else
         echo "> Unable to find wget from your environment's PATH variable."
@@ -199,14 +204,12 @@ if [ "${?}" != '0' ]; then
         exit 1
     fi
 else
-    WGET="$(which wget)"
+    WGET="$(command -v wget 2> /dev/null)"
 fi
 
 # Capturing 7z command.
-which 7z 1> /dev/null 2>&1
-
-if [ "${?}" != '0' ]; then
-    if [ ! -z "${P7ZIP_FALLBACK}" ]; then
+if ! command -v 7z 1> /dev/null 2>&1; then
+    if [ -n "${P7ZIP_FALLBACK}" ]; then
         P7ZIP="${P7ZIP_FALLBACK}"
     else
         echo "> Unable to find 7z from your environment's PATH variable."
@@ -214,14 +217,12 @@ if [ "${?}" != '0' ]; then
         exit 1
     fi
 else
-    P7ZIP="$(which 7z)"
+    P7ZIP="$(command -v 7z 2> /dev/null)"
 fi
 
 # Capturing binarycreator command.
-which binarycreator 1> /dev/null 2>&1
-
-if [ "${?}" != '0' ]; then
-    if [ ! -z "${BINARYCREATOR_FALLBACK}" ]; then
+if ! command -v binarycreator 1> /dev/null 2>&1; then
+    if [ -n "${BINARYCREATOR_FALLBACK}" ]; then
         BINARYCREATOR="${BINARYCREATOR_FALLBACK_FALLBACK}"
     else
         echo "> Unable to find binarycreator from your environment's PATH variable."
@@ -229,14 +230,12 @@ if [ "${?}" != '0' ]; then
         exit 1
     fi
 else
-    BINARYCREATOR="$(which binarycreator)"
+    BINARYCREATOR="$(command -v binarycreator 2> /dev/null)"
 fi
 
 # Capturing upx command.
-which upx 1> /dev/null 2>&1
-
-if [ "${?}" != '0' ]; then
-    if [ ! -z "${UPX_FALLBACK}" ]; then
+if ! command -v upx 1> /dev/null 2>&1; then
+    if [ -n "${UPX_FALLBACK}" ]; then
         UPX="${UPX_FALLBACK}"
         echo "> UPX binary found at: '${UPX}'"
     else
@@ -248,7 +247,7 @@ if [ "${?}" != '0' ]; then
         COMPRESS_INSTALLER_IF_POSSIBLE=0
     fi
 else
-    UPX="$(which upx)"
+    UPX="$(command -v upx 2> /dev/null)"
     echo "> UPX binary found at: '${UPX}'"
 fi
 
@@ -257,7 +256,8 @@ IMPORT_MOORHUHNJAGD
 IMPORT_MOORHUHN2
 IMPORT_MOORHUHNWINTER
 IMPORT_MOORHUHN3
-BUILD_INSTALLER
-[ ${?} -eq 0 ] && COMPRESS_INSTALLER
+if BUILD_INSTALLER; then
+    COMPRESS_INSTALLER
+fi
 CLEAR_DATA_DIRS
 
